@@ -1,0 +1,9 @@
+"AddonInfo"
+{
+  addonSteamAppID   	550
+  addontitle		"Left 4 Dev"
+  addonversion	    	"1.0"
+  addonauthor 	   	"smilzo"
+  addonDescription  	"Dev tools"
+  addonContent_Script 	1
+}
