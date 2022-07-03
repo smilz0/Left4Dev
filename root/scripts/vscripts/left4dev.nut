@@ -430,10 +430,19 @@ const LOG_LEVEL_DEBUG = 4;
 			return;
 		}
 		
+		/* TODO: The Sacrifice still does it's fade without this
+		local ent = null;
+		while (ent = Entities.FindByClassname(ent, "env_fade"))
+		{
+			if (ent.IsValid())
+				DoEntFire("!self", "Kill", "", 0, null, ent);
+		}
+		*/
+		
 		DoEntFire("!self", "ReleaseSurvivorPositions", "", 0, null, info_director);
 		DoEntFire("!self", "FinishIntro", "", 0, null, info_director);
 		
-		local ent = null;
+		ent = null;
 		while (ent = Entities.FindByClassname(ent, "point_viewcontrol_survivor"))
 		{
 			if (ent.IsValid())
