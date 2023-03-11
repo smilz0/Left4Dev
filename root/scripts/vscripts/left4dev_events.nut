@@ -7,6 +7,39 @@ Msg("Including left4dev_events...\n");
 
 IncludeScript("left4lib_hooks");
 
+/*
+::Left4Dev.Events.OnGameEvent_player_falldamage <- function (params)
+{
+	local userid = params["userid"];
+	local damage = 0;
+	local causer = null;
+	
+	local player = g_MapScript.GetPlayerFromUserID(userid);
+	
+	if (!player || !player.IsValid())
+		return;
+	
+	if ("damage" in params)
+		damage = params["damage"];
+	
+	if ("causer" in params)
+	{
+		causer = params["causer"];
+		causer = g_MapScript.GetPlayerFromUserID(causer);
+	}
+	
+	if (causer && causer.IsValid())
+	{
+		if (causer.IsPlayer())
+			printl("OnGameEvent_player_falldamage - " + player.GetPlayerName() + " - " + damage + " - " + causer.GetPlayerName());
+		else
+			printl("OnGameEvent_player_falldamage - " + player.GetPlayerName() + " - " + damage + " - " + causer.GetClassname());
+	}
+	else
+		printl("OnGameEvent_player_falldamage - " + player.GetPlayerName() + " - " + damage);
+}
+*/
+
 // "userid"	"short"		// user ID on server
 // "index"	"byte"		// player slot (entity index-1)	
 ::Left4Dev.Events.OnGameEvent_player_connect_full <- function (params)
