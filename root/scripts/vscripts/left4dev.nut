@@ -7,6 +7,8 @@ Msg("Including left4dev...\n");
 
 IncludeScript("left4lib_utils");
 IncludeScript("left4lib_timers");
+IncludeScript("left4lib_concepts");
+IncludeScript("left4lib_hooks");
 
 // Log levels
 const LOG_LEVEL_NONE = 0; // Log always
@@ -135,6 +137,11 @@ const LOG_LEVEL_DEBUG = 4;
 	::Left4Dev.OnRoundStart <- function (player)
 	{
 		Left4Dev.Log(LOG_LEVEL_DEBUG, "Left4Dev.OnRoundStart");
+		
+		// Apparently, when scriptedmode is enabled and this director option isn't set, there is a big stutter (for the host)
+		// when a witch is chasing a survivor and that survivor enters the saferoom. Simply having a value for this key, removes the stutter
+		if (!("AllowWitchesInCheckpoints" in DirectorScript.GetDirectorOptions()))
+			DirectorScript.GetDirectorOptions().AllowWitchesInCheckpoints <- false;
 		
 		foreach (player in ::Left4Utils.GetHumanPlayers())
 			Left4Dev.PlayerIn(player);
@@ -341,7 +348,7 @@ const LOG_LEVEL_DEBUG = 4;
 		}
 	}
 	
-	::Left4Dev.Test <- function (player, param)
+	::Left4Dev.Test <- function (player, param1, param2)
 	{
 		//
 	}
