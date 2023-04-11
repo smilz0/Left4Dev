@@ -7,54 +7,6 @@ Msg("Including left4dev_events...\n");
 
 //IncludeScript("left4lib_hooks");
 
-// "userid"	"short"		// user ID on server
-// "index"	"byte"		// player slot (entity index-1)	
-::Left4Dev.Events.OnGameEvent_player_connect_full <- function (params)
-{
-	local userid = params["userid"];
-	local player = g_MapScript.GetPlayerFromUserID(userid);
-	
-	Left4Dev.PlayerIn(player);
-}
-
-::Left4Dev.Events.OnGameEvent_player_disconnect <- function (params)
-{
-	if ("userid" in params)
-	{
-		local userid = params["userid"].tointeger();
-		local player = g_MapScript.GetPlayerFromUserID(userid);
-	
-		if (player && player.IsValid() && IsPlayerABot(player))
-			return;
-	
-		Left4Dev.PlayerOut(userid, player);
-	}
-}
-
-// "userid"	"short"		// user ID on server
-::Left4Dev.Events.OnGameEvent_player_spawn <- function (params)
-{
-	local userid = params["userid"];
-	local player = g_MapScript.GetPlayerFromUserID(userid);
-	
-	if (IsPlayerABot(player))
-		return;
-	
-	local steamid = player.GetNetworkIDString();
-	Left4Dev.PlayerIn(player);
-}
-
-// short	bot			user ID of the bot
-// short	player		user ID of the player
-::Left4Dev.Events.OnGameEvent_bot_player_replace <- function (params)
-{
-	local userid = params["player"];
-	local player = g_MapScript.GetPlayerFromUserID(userid);
-	
-	local steamid = player.GetNetworkIDString();
-	Left4Dev.PlayerIn(player);
-}
-
 ::Left4Dev.Events.OnGameEvent_round_start <- function (params)
 {
 	Left4Dev.OnRoundStart(params);

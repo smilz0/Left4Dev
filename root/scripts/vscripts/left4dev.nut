@@ -9,6 +9,7 @@ IncludeScript("left4lib_utils");
 IncludeScript("left4lib_timers");
 IncludeScript("left4lib_concepts");
 IncludeScript("left4lib_hooks");
+IncludeScript("left4lib_users");
 
 // Log levels
 const LOG_LEVEL_NONE = 0; // Log always
@@ -31,8 +32,6 @@ const LOG_LEVEL_DEBUG = 4;
 			damage = 0
 			loglevel = 3
 		}
-		Admins = {}
-		OnlineAdmins = []
 		Events = {}
 	}
 
@@ -70,68 +69,7 @@ const LOG_LEVEL_DEBUG = 4;
 		Left4Utils.SaveSettingsToFile("left4dev/cfg/settings.txt", ::Left4Dev.Settings, Left4Dev.Log);
 		Left4Utils.PrintSettings(::Left4Dev.Settings, Left4Dev.Log, "[Settings] ");
 		
-		Left4Dev.Log(LOG_LEVEL_DEBUG, "Loading admins...");
-		::Left4Dev.Admins = Left4Utils.LoadAdminsFromFile("left4dev/cfg/admins.txt", Left4Dev.Log);
-		Left4Dev.Log(LOG_LEVEL_DEBUG, "Loaded " + Left4Dev.Admins.len() + " admins");
-		
 		Left4Dev.Initialized = true;
-	}
-
-	::Left4Dev.IsAdmin <- function (player)
-	{
-		if (!player)
-			return false;
-
-		local steamid = player.GetNetworkIDString();
-		if (!steamid || steamid == "BOT")
-			return false;
-
-		if (steamid in ::Left4Dev.Admins)
-			return true;
-		
-		if (GetListenServerHost() == player || Director.IsSinglePlayerGame())
-		{
-			Left4Dev.Admins[steamid] <- player.GetPlayerName();
-			
-			Left4Utils.SaveAdminsToFile("left4dev/cfg/admins.txt", ::Left4Dev.Admins);
-
-			return true;
-		}
-		return false;
-	}
-
-	::Left4Dev.IsOnlineAdmin <- function (player)
-	{
-		if (!player)
-			return false;
-		
-		if (Left4Dev.OnlineAdmins.find(player.GetPlayerUserId()) != null)
-			return true;
-		else
-			return false;
-	}
-
-	::Left4Dev.PlayerIn <- function (player)
-	{
-		local userid = player.GetPlayerUserId().tointeger();
-		
-		if (Left4Dev.OnlineAdmins.find(userid) == null && Left4Dev.IsAdmin(player))
-		{
-			Left4Dev.Log(LOG_LEVEL_DEBUG, "Adding admin with userid: " + userid);
-		
-			Left4Dev.OnlineAdmins.push(userid);
-			Left4Dev.OnlineAdmins.sort();
-		}
-	}
-
-	::Left4Dev.PlayerOut <- function (userid, player)
-	{
-		local idx = Left4Dev.OnlineAdmins.find(userid);
-		if (idx != null)
-		{
-			Left4Dev.OnlineAdmins.remove(idx);
-			Left4Dev.Log(LOG_LEVEL_DEBUG, "OnlineAdmin removed with idx: " + idx);
-		}
 	}
 
 	::Left4Dev.OnRoundStart <- function (player)
@@ -142,9 +80,6 @@ const LOG_LEVEL_DEBUG = 4;
 		// when a witch is chasing a survivor and that survivor enters the saferoom. Simply having a value for this key, removes the stutter
 		if (!("AllowWitchesInCheckpoints" in DirectorScript.GetDirectorOptions()))
 			DirectorScript.GetDirectorOptions().AllowWitchesInCheckpoints <- false;
-		
-		foreach (player in ::Left4Utils.GetHumanPlayers())
-			Left4Dev.PlayerIn(player);
 		
 		if (Left4Dev.Settings.concepts)
 			::ConceptsHub.SetHandler("LEFT4DEV", ::Left4Dev.OnConcept);
@@ -201,7 +136,7 @@ const LOG_LEVEL_DEBUG = 4;
 	
 	::Left4Dev.HandleCommand <- function (player, cmd, args)
 	{
-		if (player == null || !player.IsValid() || !Left4Dev.IsOnlineAdmin(player))
+		if (player == null || !player.IsValid() || Left4Users.GetOnlineUserLevel(player.GetPlayerUserId()) < L4U_LEVEL.Admin)
 			return;
 		
 		Left4Dev.Log(LOG_LEVEL_DEBUG, "Left4Dev.HandleCommand - " + player.GetPlayerName() + " - cmd: " + cmd + " - args: " + args.len());
