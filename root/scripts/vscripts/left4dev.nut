@@ -214,19 +214,25 @@ const LOG_LEVEL_DEBUG = 4;
 			}
 			case "nearbyents":
 			{
-				local radius = 300;
+				local filter = "*";
 				if (args.len() > 0)
-					radius = args[0].tointeger();
+					filter = args[0];
 				
-				Left4Dev.Log(LOG_LEVEL_INFO, "--- Start of entities around me ---");
+				local radius = 300;
+				if (args.len() > 1)
+					radius = args[1].tointeger();
+				
+				Left4Dev.Log(LOG_LEVEL_INFO, "-- ENTITIES -----------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+				Left4Dev.Log(LOG_LEVEL_INFO, "  ID  |               CLASS                      |                             NAME                             |                 ORIGIN              |   MODEL");
+				Left4Dev.Log(LOG_LEVEL_INFO, "-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 				local t = {};
 				local ent = null;
 				local i = -1;
 				local orig = player.GetOrigin();
-				while (ent = Entities.FindInSphere(ent, orig, radius))
+				while (ent = Entities.FindByClassnameWithin(ent, filter, orig, radius))
 				{
 					if (ent.IsValid())
-						Left4Dev.Log(LOG_LEVEL_INFO, ent.GetEntityIndex() + " - name: " + ent.GetName() + " - class: " + ent.GetClassname() + " - model: " + NetProps.GetPropString(ent, "m_ModelName") + " - origin: " + ent.GetOrigin());
+						Left4Dev.Log(LOG_LEVEL_INFO, format("%5d", ent.GetEntityIndex()) + " | " + format("%40s", ent.GetClassname()) + " | " + format("%60s", ent.GetName()) + " | " + format("%011.4f", ent.GetOrigin().x) + "," + format("%011.4f", ent.GetOrigin().y) + "," + format("%011.4f", ent.GetOrigin().z) + " | " + ent.GetModelName());
 					
 					/*
 					Left4Dev.Log(LOG_LEVEL_DEBUG, NetProps.GetPropEntity(ent, "m_hOwner"));
@@ -237,7 +243,7 @@ const LOG_LEVEL_DEBUG = 4;
 						Left4Dev.Log(LOG_LEVEL_DEBUG, "m_useActionOwner: " + NetProps.GetPropEntity(ent, "m_useActionOwner"));
 					*/
 				}
-				Left4Dev.Log(LOG_LEVEL_INFO, "--- End of entities around me ---");
+				Left4Dev.Log(LOG_LEVEL_INFO, "-- /ENTITIES ----------------------------------------------------------------------------------------------------------------------------------------------------------------------");
 				
 				break;
 			}
