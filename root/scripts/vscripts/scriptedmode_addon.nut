@@ -70,7 +70,6 @@ function ScriptMode_Init( modename, mapname )
 	}
 	
 	IncludeScript("left4dev");
-	Left4Dev.Initialize(modename, mapname);
 	
 	return true;
 }
