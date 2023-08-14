@@ -25,15 +25,10 @@ const LOG_LEVEL_DEBUG = 4;
 	ModeName = ""
 	MapName = ""
 	Difficulty = "" // easy, normal, hard, impossible
-	Settings =
-	{
-		concepts = 0
-		flow = 0
-		damage = 0
-		loglevel = 3
-	}
 	Events = {}
 }
+
+IncludeScript("left4dev_settings");
 
 ::Left4Dev.Log <- function (level, text)
 {
