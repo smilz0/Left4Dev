@@ -18,7 +18,7 @@ https://github.com/smilz0/Left4Dev/blob/main/root/scripts/vscripts/left4dev_sett
 scripted_user_func l4d,_command_,[parameters]
 
 
-- **runscript** _scriptfilename.nut_ (script must be in the _script/vscript_ directory)
+- **runscript** _scriptfilename.nut_ (script must be in the _scripts/vscripts_ directory)
 - **nearbyents** [_filter_] [_radius_]
 - **origin**
 - **looking**
